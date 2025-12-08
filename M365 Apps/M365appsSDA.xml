@@ -1,7 +1,20 @@
 <Configuration>
+  <!-- 
+    Microsoft 365 Apps Configuration for Azure Virtual Desktop
+    Shared Device Activation (SDA) Enabled
+    
+    Excluded Apps (installed separately):
+    - OneDrive: Install using per-machine mode (OneDriveperMachine.ps1)
+    - Lync/Skype: Not supported on AVD
+    - Groove: OneDrive for Business sync (replaced by OneDrive)
+    - Access: Excluded per requirements
+    - Publisher: Excluded per requirements
+    - Teams: Install using Teams VDI installation (teamsbootstrapper.exe -p)
+  -->
   <Add OfficeClientEdition="64" Channel="MonthlyEnterprise">
     <Product ID="O365ProPlusRetail">
       <Language ID="en-us" />
+      <Language ID="MatchOS" />
       <ExcludeApp ID="Access" />
       <ExcludeApp ID="Groove" />
       <ExcludeApp ID="Lync" />
@@ -10,11 +23,31 @@
       <ExcludeApp ID="Teams" />
     </Product>
   </Add>
+  
+  <!-- Shared Computer Activation for multi-user VDI environments -->
   <Property Name="SharedComputerLicensing" Value="1" />
+  
+  <!-- Force close running Office apps during installation -->
   <Property Name="FORCEAPPSHUTDOWN" Value="TRUE" />
+  
+  <!-- Disable device-based licensing (using user-based with SCA) -->
   <Property Name="DeviceBasedLicensing" Value="0" />
+  
+  <!-- Use default SCA cache location -->
   <Property Name="SCLCacheOverride" Value="0" />
-  <Updates Enabled="TRUE" />
+  
+  <!-- Don't pin icons to taskbar (recommended for VDI) -->
+  <Property Name="PinIconsToTaskbar" Value="FALSE" />
+  
+  <!-- Disable automatic updates (manage via image updates) -->
+  <Updates Enabled="FALSE" />
+  
+  <!-- Remove any existing MSI-based Office installations -->
   <RemoveMSI />
+  
+  <!-- Silent installation with EULA acceptance -->
   <Display Level="None" AcceptEULA="TRUE" />
+  
+  <!-- Logging for troubleshooting -->
+  <Logging Level="Standard" Path="%temp%\M365AppsInstall" />
 </Configuration>
